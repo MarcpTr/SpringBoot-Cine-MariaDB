@@ -327,6 +327,8 @@ El cliente implementa operaciones para:
 /trending/movie/week
 ```
 
+En las búsquedas, el idioma se envía mediante el parámetro `language`, de acuerdo con la API de TMDB.
+
 Las respuestas de TMDB se mantienen como `JsonNode`, permitiendo almacenar el JSON prácticamente sin modificarlo.
 
 Para obtener una película se solicitan también:
@@ -383,7 +385,8 @@ Actualmente existen estas cachés:
 | `search` | 1000 | 6 h desde escritura |
 | `tmdbTrendingDay` | 500 | 20 min |
 | `tmdbTrendingWeek` | 500 | 4 h |
-| `trends` | 100 | 15 min |
+
+Las cachés activas de tendencias son `tmdbTrendingDay` y `tmdbTrendingWeek`. No se configura una caché adicional llamada `trends`.
 
 Se utiliza:
 
@@ -459,8 +462,8 @@ Esto permite almacenar diferentes versiones lingüísticas de una misma películ
 El modelo `Search` almacena las respuestas de búsquedas realizadas:
 
 ```text
-id
-query
+id              SHA-256 de la clave de búsqueda
+query           Texto original buscado (String)
 page
 content
 lang
@@ -468,7 +471,19 @@ updatedAt
 lastAccessedAt
 ```
 
-La respuesta de TMDB también se almacena como JSON.
+La respuesta de TMDB se almacena como JSON. El identificador se calcula a partir de la consulta, la página y el idioma, por lo que búsquedas con los mismos parámetros generan el mismo ID:
+
+```text
+page | idioma | consulta
+          │
+          ▼
+      SHA-256
+          │
+          ▼
+      Search.id
+```
+
+La consulta original se conserva en `query` como texto.
 
 ---
 
@@ -583,7 +598,7 @@ server.port=8082
 
 spring.datasource.url=${DB_URL}
 spring.datasource.username=${DB_USERNAME}
-spring.datasource.driver-class-name=org.mariadb.jdbc.Driver}
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
 
 spring.jpa.hibernate.ddl-auto=update
 
