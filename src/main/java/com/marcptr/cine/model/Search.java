@@ -22,7 +22,7 @@ public class Search {
 
   @Id
   private String id;
-  private Long query;
+  private String query;
   private Integer page;
   @JdbcTypeCode(SqlTypes.JSON)
   private JsonNode content;

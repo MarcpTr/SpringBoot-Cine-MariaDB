@@ -31,7 +31,7 @@ public class TmdbClient {
                                 .uri(uriBuilder -> uriBuilder
                                                 .path("/search/movie")
                                                 .queryParam("query", query)
-                                                .queryParam("lang", lang)
+                                                .queryParam("language", lang)
                                                 .queryParam("page", page)
                                                 .queryParam("api_key", apiKey)
                                                 .build())

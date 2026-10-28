@@ -22,19 +22,19 @@ public class SearchService {
     String rawKey = page + "|" + lang + "|" + query;
     String id = DigestUtils.sha256Hex(rawKey);
 
-    Search search = sRepository.findById(rawKey)
+    Search search = sRepository.findById(id)
         .orElseGet(() -> fetchAndSaveSearch(id, query, page, lang));
     return SearchResponse.builder().content(search.getContent()).build();
   }
 
   private Search fetchAndSaveSearch(String id, String query, Integer page, String lang) {
-    String rawKey = page + "|" + lang + "|" + query;
-
     TmdbSearchMovieResponse tmdb = tmdbClient.searchMovies(query, page, lang);
     Instant now = Instant.now();
     Search search = Search.builder()
         .content(tmdb.getContent())
-        .id(rawKey)
+        .id(id)
+        .query(query)
+        .lang(lang)
         .updatedAt(now)
         .lastAccessedAt(now)
         .page(page)

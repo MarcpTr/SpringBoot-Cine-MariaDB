@@ -33,13 +33,6 @@ public class CacheConfig {
                             .expireAfterAccess(Duration.ofHours(6))
                             .build());
 
-    CaffeineCache trends =
-            new CaffeineCache(
-                    "trends",
-                    Caffeine.newBuilder()
-                            .maximumSize(100)
-                            .expireAfterWrite(Duration.ofMinutes(15))
-                            .build());
       CaffeineCache trendingDay =
             new CaffeineCache(
                 "tmdbTrendingDay",
@@ -57,7 +50,7 @@ public class CacheConfig {
                     .expireAfterWrite(Duration.ofHours(4))
                     .build()
             );
-    manager.setCaches(List.of(movies, trends, trendingDay, trendingWeek,search));
+    manager.setCaches(List.of(movies, trendingDay, trendingWeek, search));
 
     return manager;
     }
